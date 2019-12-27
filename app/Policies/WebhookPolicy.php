@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Webhook;
+use App\Models\WebhookState;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\GenericUser;
 
@@ -27,6 +28,6 @@ class WebhookPolicy
 
     public function update(GenericUser $user, Webhook $hook)
     {
-        return $hook->manager_id === $user->id;
+        return $hook->manager_id === $user->id && $hook->state !== WebhookState::INVALIDATED;
     }
 }

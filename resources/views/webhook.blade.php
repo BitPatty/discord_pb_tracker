@@ -7,14 +7,12 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <link href="https://cdn.materialdesignicons.com/4.7.95/css/materialdesignicons.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
-
     <style>
         body {
             font-family: 'Nunito', sans-serif;
             padding: 15px;
         }
     </style>
-
     <title>Edit Webhook {{$webhook->name}}</title>
 </head>
 <body class="is-widescreen level">
@@ -34,10 +32,11 @@
     <div class="section">
         <h3 id="edit-hook" class="title is-3">Edit Hook</h3>
         <form action="javascript:submitForm()">
-            @csrf
-            <fieldset id="frm">
+            <fieldset id="frm" @if($webhook->state === \App\Models\WebhookState::INVALIDATED) disabled
+                      aria-disabled="true" @endif>
+                @csrf
                 <div class="field">
-                    <label class="label">Name</label>
+                    <label for="frm_name" class="label">Name</label>
                     <div class="control">
                         <input id="frm_name" name="frm_name" class="input" type="text" required aria-required="true"
                                title="The webhook name"
@@ -47,7 +46,7 @@
                     <p class="help"></p>
                 </div>
                 <div class="field">
-                    <label class="label">Discord URL</label>
+                    <label for="frm_url" class="label">Discord URL</label>
                     <div class="control">
                         <input id="frm_url" name="frm_url" class="input" type="url" required aria-required="true"
                                title="The webhook url"
@@ -56,12 +55,27 @@
                     </div>
                 </div>
                 <div class="field ">
-                    <label class="label">Description</label>
-                    <div class="field">
-                        <div class="control">
+                    <label for="frm_desc" class="label">Description</label>
+                    <div class="control">
                         <textarea id="frm_desc" name="frm_desc" class="textarea"
                                   placeholder="PB Tracker for my server"
                                   maxlength="2048">{{$webhook->description}}</textarea>
+                    </div>
+                </div>
+                <div class="field ">
+                    <label for="frm_state" class="label">State</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="frm_state" name="frm_state">
+                                <option value="ACTIVE"
+                                        @if($webhook->state === \App\Models\WebhookState::ACTIVE) selected
+                                        aria-selected="true" @endif>Active
+                                </option>
+                                <option value="DEAD"
+                                        @if($webhook->state !== \App\Models\WebhookState::ACTIVE) selected
+                                        aria-selected="true" @endif>Inactive
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -71,15 +85,16 @@
     </div>
     <div class="section">
         <h3 class="title is-3">Tracked Runners</h3>
-
         <div id="runner_list" class="buttons">
             @foreach($webhook->trackers->sortBy('src_name') as $tracker)
                 <span onclick="removeRunner(this)" data-tracker-id="{{$tracker->id}}"
+                      @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
+                      aria-disabled="true" @endif
                       class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_name}}</span>
             @endforeach
         </div>
-
-        <fieldset id="frm_runners">
+        <fieldset id="frm_runners" @if($webhook->state === \App\Models\WebhookState::INVALIDATED) disabled
+                  aria-disabled="true" @endif>
             <div class="field">
                 <label class="label">Name</label>
                 <div class="control">
@@ -102,14 +117,13 @@
     crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script>
-
     document.querySelector('#frm_runners').addEventListener("keydown", (e) => {
         console.log(e);
 
         if (e.keyCode == 13) {
             addRunner();
         }
-    })
+    });
 
     function addRunner() {
         document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
@@ -145,6 +159,8 @@
     }
 
     function removeRunner(e) {
+        if (e.getAttribute('aria-disabled')) return;
+
         const id = e.getAttribute('data-tracker-id');
         if (!id) return;
 
@@ -193,9 +209,11 @@
                 toastr.error('Failed to update hook', xhr.statusText);
             }
         };
-        let payload = {
+
+        const payload = {
             name: document.querySelector("#frm_name").value.trim(),
             description: document.querySelector("#frm_desc").value,
+            state: document.querySelector("#frm_state").value,
             _token: document.querySelector("input[name='_token']").value
         };
 

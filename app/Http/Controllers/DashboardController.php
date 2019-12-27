@@ -15,7 +15,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $hooks = Webhook::where(['manager_id' => $request->user()->id])->get();
+        $hooks = Webhook::where(['manager_id' => $request->user()->id])->orderBy('state')->get();
         return view('dashboard', ['webhooks' => $hooks]);
     }
 

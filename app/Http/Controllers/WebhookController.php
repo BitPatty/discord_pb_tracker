@@ -32,7 +32,8 @@ class WebhookController extends Controller
 
         $validator = Validator::make($request->post(), [
             'name' => 'required|regex:/^[ a-zA-Z0-9]+$/u',
-            'description' => 'max: 2048'
+            'description' => 'max: 2048',
+            'state' => 'required|in:ACTIVE,DEAD'
         ]);
 
         if ($validator->fails()) {
@@ -45,10 +46,15 @@ class WebhookController extends Controller
             if ($messages->has('description')) {
                 return response()->json(['status' => 422, 'message' => 'Invalid description format (description)'], 422);
             }
+
+            if ($messages->has('state')) {
+                return response()->json(['status' => 422, 'message' => 'Invalid state format (state)'], 422);
+            }
         }
 
         $hook->name = $request->post('name');
         $hook->description = $request->post('description') ?? '';
+        $hook->state = $request->post('state');
         $hook->save();
 
         return Webhook::find($hook->id);
@@ -103,7 +109,7 @@ class WebhookController extends Controller
         $hook->guild_id = $webhook_data['guild_id'];
         $hook->name = $request->post('name');
         $hook->description = $request->post('description') ?? '';
-        $hook->avatar_url = 'https://cdn.discordapp.com/avatars/' . $webhook_data['id'] . '/' . $webhook_data['avatar'] . '.png';
+        $hook->avatar_url = isset($webhook_data['avatar']) ? 'https://cdn.discordapp.com/avatars/' . $webhook_data['id'] . '/' . $webhook_data['avatar'] . '.png' : null;
         $hook->state = WebhookState::CREATED;
         $hook->save();
 

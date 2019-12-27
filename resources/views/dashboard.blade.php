@@ -48,7 +48,8 @@
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                <strong>{{$webhook->name}}</strong> <small
+                                <strong>{{$webhook->name}}</strong> @include('partials.hook_status_indicator', ['state' => $webhook->state])
+                                <small
                                     class="is-italic">{{$webhook->discord_id}}</small>
                                 <br>
                                 {{$webhook->description}}
