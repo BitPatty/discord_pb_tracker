@@ -8,7 +8,7 @@ class Tracker extends Model
 {
     public function webhook()
     {
-        return $this->hasOne('\App\Models\Webhook', 'id', 'webhook_id');
+        return $this->belongsTo('\App\Models\Webhook', 'id', 'webhook_id');
     }
 
     protected $fillable = [

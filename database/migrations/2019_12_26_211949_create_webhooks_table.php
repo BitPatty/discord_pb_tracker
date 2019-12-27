@@ -11,13 +11,16 @@ class CreateWebhooksTable extends Migration
         Schema::create('t_webhook', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('url');
+            $table->string('name');
+            $table->string('description', 2048)->nullable();
+            $table->string('avatar_url')->nullable();
             $table->unsignedBigInteger('manager_id');
             $table->unsignedBigInteger('discord_id')->unique();
             $table->unsignedBigInteger('channel_id');
             $table->unsignedBigInteger('guild_id');
             $table->string('channel_name')->nullable();
             $table->string('guild_name')->nullable();
-            $table->enum('state', ['CREATED','ACTIVE', 'DEAD', 'INVALIDATED'])->default('CREATED');
+            $table->enum('state', ['CREATED', 'ACTIVE', 'DEAD', 'INVALIDATED'])->default('CREATED');
             $table->timestamps();
 
             $table->foreign('manager_id')->references('id')->on('t_user');

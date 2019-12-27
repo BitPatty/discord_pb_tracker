@@ -6,6 +6,7 @@ use App\Http\Fetch;
 use App\Models\Webhook;
 use App\Models\WebhookState;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class WebhookController extends Controller
@@ -19,19 +20,62 @@ class WebhookController extends Controller
         return Webhook::where(['manager_id' => $request->user()->id])->get();
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, Webhook $hook)
     {
-        return Webhook::where(['manager_id' => $request->user()->id])->find($id);
+        if (!Gate::allows('read', $hook)) abort(403);
+        return $hook;
+    }
+
+    public function update(Request $request, Webhook $hook)
+    {
+        if (!Gate::allows('update', $hook)) abort(403);
+
+        $validator = Validator::make($request->post(), [
+            'name' => 'required|regex:/^[ a-zA-Z0-9]+$/u',
+            'description' => 'max: 2048'
+        ]);
+
+        if ($validator->fails()) {
+            $messages = $validator->errors();
+
+            if ($messages->has('name')) {
+                return response()->json(['status' => 422, 'message' => 'Invalid name format (name)'], 422);
+            }
+
+            if ($messages->has('description')) {
+                return response()->json(['status' => 422, 'message' => 'Invalid description format (description)'], 422);
+            }
+        }
+
+        $hook->name = $request->post('name');
+        $hook->description = $request->post('description') ?? '';
+        $hook->save();
+
+        return Webhook::find($hook->id);
     }
 
     public function create(Request $request)
     {
         $validator = Validator::make($request->post(), [
-            'url' => 'required|regex:/^https\:\/\/discordapp\.com\/api\/webhooks[\/a-zA-Z0-9_]+$/u'
+            'name' => 'required|regex:/^[a-zA-Z0-9]+$/u',
+            'url' => 'required|regex:/^https\:\/\/discordapp\.com\/api\/webhooks[\/a-zA-Z0-9\-_]+$/u',
+            'description' => 'max: 2048'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['status' => 422, 'message' => 'Invalid webhook URL format (url)'], 422);
+            $messages = $validator->errors();
+
+            if ($messages->has('url')) {
+                return response()->json(['status' => 422, 'message' => 'Invalid webhook URL format (url)'], 422);
+            }
+
+            if ($messages->has('name')) {
+                return response()->json(['status' => 422, 'message' => 'Invalid name format (name)'], 422);
+            }
+
+            if ($messages->has('description')) {
+                return response()->json(['status' => 422, 'message' => 'Invalid description format (description)'], 422);
+            }
         }
 
         $webhook_url = $request->post('url');
@@ -57,6 +101,9 @@ class WebhookController extends Controller
         $hook->discord_id = $webhook_data['id'];
         $hook->channel_id = $webhook_data['channel_id'];
         $hook->guild_id = $webhook_data['guild_id'];
+        $hook->name = $request->post('name');
+        $hook->description = $request->post('description') ?? '';
+        $hook->avatar_url = $webhook_data['avatar'];
         $hook->state = WebhookState::CREATED;
         $hook->save();
 

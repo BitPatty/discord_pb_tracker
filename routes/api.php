@@ -7,11 +7,14 @@ Route::group(['middleware' => ['auth:api']], function () {
         return \App\Models\User::find($request->user()->id);
     });
 
+    //Webhooks
     Route::get('webhooks', 'WebhookController@index');
-    Route::get('webhooks/{id}', 'WebhookController@show');
+    Route::get('/webhooks/{hook}', 'WebhookController@show');
     Route::post('webhooks', 'WebhookController@create');
 
+    //Trackers00
     Route::get('trackers', 'TrackerController@index');
-    Route::get('trackers/{id}', 'TrackerController@show');
+    Route::get('/trackers/{tracker}', 'TrackerController@show');
+
     Route::post('trackers', 'TrackerController@create');
 });

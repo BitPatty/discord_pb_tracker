@@ -6,6 +6,7 @@ use App\Http\Fetch;
 use App\Models\Tracker;
 use App\Models\Webhook;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class TrackerController extends Controller
@@ -22,12 +23,10 @@ class TrackerController extends Controller
         })->get();
     }
 
-    public function show(Request $request, $id)
+    public function show(Tracker $tracker)
     {
-        $uid = $request->user()->id;
-        return Tracker::whereHas('webhook', function ($q) use ($uid) {
-            $q->where(['manager_id' => $uid]);
-        })->find($id);
+        if (!Gate::allows('read', $tracker)) abort(403);
+        return $tracker;
     }
 
     public function create(Request $request)
@@ -38,7 +37,6 @@ class TrackerController extends Controller
         ]);
 
         if ($validator->fails()) {
-
             $messages = $validator->errors();
             if ($messages->has('hook')) return response()->json(['status' => 422, 'message' => 'Invalid hook format (hook)'], 422);
             elseif ($messages->has('runner')) return response()->json(['status' => 422, 'message' => 'Invalid runner format (runner)'], 422);
