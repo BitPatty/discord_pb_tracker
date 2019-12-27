@@ -3,13 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="763c2f50-cd07-4a7f-bdd9-9196ad692d7c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TrackerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TrackerController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/WebhookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/WebhookController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/TrackersTableSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/TrackersTableSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/new.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/new.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/webhook.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/webhook.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Policies/TrackerPolicy.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Policies/TrackerPolicy.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -169,7 +164,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1577388496481</updated>
-      <workItem from="1577388498613" duration="40011000" />
+      <workItem from="1577388498613" duration="40290000" />
     </task>
     <servers />
   </component>

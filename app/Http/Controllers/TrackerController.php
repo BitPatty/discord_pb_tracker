@@ -29,13 +29,16 @@ class TrackerController extends Controller
         return $tracker;
     }
 
-    public function delete(Request $request, Tracker $tracker)
+    public function delete(Tracker $tracker)
     {
+        if (!Gate::allows('delete', $tracker)) abort(403);
         $tracker->delete();
     }
 
     public function create(Request $request, Webhook $hook)
     {
+        if (!Gate::allows('update', $hook)) abort(403);
+
         $validator = Validator::make($request->post(), [
             'runner' => 'required|regex:/^[a-zA-Z0-9-_]+$/u'
         ]);

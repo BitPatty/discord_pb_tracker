@@ -31,4 +31,8 @@ class TrackerPolicy
     {
         return $tracker->webhook()->first()->manager_id === $user->id;
     }
+
+    public function delete(GenericUser $user, Tracker $tracker) {
+        return $tracker->webhook()->first()->manager_id === $user->id;
+    }
 }
