@@ -30,6 +30,11 @@
         </ul>
     </nav>
     <div class="section">
+        @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
+            <div class="notification is-warning">
+                The discord webhook connected to this tracker is no longer valid and has been marked as read-only.
+            </div>
+        @endif
         <h3 id="edit-hook" class="title is-3">Edit Hook</h3>
         <form action="javascript:submitForm()">
             <fieldset id="frm" @if($webhook->state === \App\Models\WebhookState::INVALIDATED) disabled
@@ -79,7 +84,9 @@
                         </div>
                     </div>
                 </div>
-                <button id="frm_submit" type="submit" class="button is-primary">Submit</button>
+                @if($webhook->state !== \App\Models\WebhookState::INVALIDATED)
+                    <button id="frm_submit" type="submit" class="button is-primary">Submit</button>
+                @endif
             </fieldset>
         </form>
     </div>
@@ -94,22 +101,23 @@
                         class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_name}}</button>
             @endforeach
         </div>
-        <fieldset id="frm_runners" @if($webhook->state === \App\Models\WebhookState::INVALIDATED) disabled
-                  aria-disabled="true" @endif>
-            <div class="field">
-                <label class="label">Name</label>
-                <div class="control">
-                    <input id="frm_runnername" name="frm_runnername" class="input" type="text" required
-                           aria-required="true"
-                           title="The runners speedrun.com username"
-                           pattern="([ ]*[A-Za-z0-9-_]+[ ]*)+"
-                           placeholder="psychonauter">
+        @if($webhook->state !== \App\Models\WebhookState::INVALIDATED)
+            <fieldset id="frm_runners">
+                <div class="field">
+                    <label class="label">Name</label>
+                    <div class="control">
+                        <input id="frm_runnername" name="frm_runnername" class="input" type="text" required
+                               aria-required="true"
+                               title="The runners speedrun.com username"
+                               pattern="([ ]*[A-Za-z0-9-_]+[ ]*)+"
+                               placeholder="psychonauter">
+                    </div>
+                    <p class="help">The runners speedrun.com username.</p>
                 </div>
-                <p class="help">The runners speedrun.com username.</p>
-            </div>
-            <button id="frm_runners_submit" type="button" onclick="addRunner()" class="button is-primary">Add
-            </button>
-        </fieldset>
+                <button id="frm_runners_submit" type="button" onclick="addRunner()" class="button is-primary">Add
+                </button>
+            </fieldset>
+        @endif
     </div>
 </div>
 <script

@@ -32,6 +32,7 @@
 
     <div class="section">
         <h3 class="title is-3">Hooks</h3>
+        <a href="/dashboard/new" class="button is-success">Add New</a>
         <div class="section">
             @foreach($webhooks as $webhook)
                 <div class="media">
@@ -57,15 +58,19 @@
                         </div>
                     </div>
                     <div class="media-right">
-                        <a href="/dashboard/edit/{{$webhook->id}}" class="button is-primary is-rounded">
-                            <i class="mdi mdi-pencil"></i>
-                        </a>
+                        @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
+                            <a href="/dashboard/edit/{{$webhook->id}}" class="button is-info is-rounded">
+                                <i class="mdi mdi-eye"></i>
+                            </a>
+                        @else
+                            <a href="/dashboard/edit/{{$webhook->id}}" class="button is-primary is-rounded">
+                                <i class="mdi mdi-pencil"></i>
+                            </a>
+                        @endif
                     </div>
                 </div>
             @endforeach
         </div>
-
-        <a href="/dashboard/new" class="button is-success">Add New</a>
     </div>
 </div>
 </body>

@@ -52,6 +52,15 @@ class WebhookController extends Controller
             }
         }
 
+        if ($hook->state !== $request->post('state') && $request->post('state') === WebhookState::ACTIVE) {
+            $hook->load('trackers');
+
+            foreach ($hook->trackers as $tracker) {
+                $tracker->last_updated = new \DateTime();
+                $tracker->save();
+            }
+        }
+
         $hook->name = $request->post('name');
         $hook->description = $request->post('description') ?? '';
         $hook->state = $request->post('state');
