@@ -39,7 +39,7 @@
                         <p class="image is-64x64">
                             @isset($webhook->avatar_url)
                                 <img class="image is-64x64 is-rounded"
-                                     src="https://cdn.discordapp.com/avatars/{{$webhook->discord_id}}/{{$webhook->avatar_url}}.png">
+                                     src="{{$webhook->avatar_url}}">
                             @else
                                 <img class="image is-64x64 is-rounded" src="https://via.placeholder.com/150">
                             @endisset

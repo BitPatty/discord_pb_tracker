@@ -103,7 +103,7 @@ class WebhookController extends Controller
         $hook->guild_id = $webhook_data['guild_id'];
         $hook->name = $request->post('name');
         $hook->description = $request->post('description') ?? '';
-        $hook->avatar_url = $webhook_data['avatar'];
+        $hook->avatar_url = 'https://cdn.discordapp.com/avatars/' . $webhook_data['id'] . '/' . $webhook_data['avatar'] . '.png';
         $hook->state = WebhookState::CREATED;
         $hook->save();
 
