@@ -10,7 +10,7 @@ class Fetch
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Speedrun Questionnaire');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Discord PB Tracker');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 300);
