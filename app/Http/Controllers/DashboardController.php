@@ -28,7 +28,7 @@ class DashboardController extends Controller
 
     public function deleteRunner(Request $request, Webhook $hook, Tracker $tracker)
     {
-        return app(TrackerController::class)->delete($request, $tracker);
+        return app(TrackerController::class)->delete($tracker);
     }
 
     public function addRunner(Request $request, Webhook $hook)
