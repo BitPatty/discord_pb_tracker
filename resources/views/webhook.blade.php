@@ -31,31 +31,6 @@
             <li class="is-active"><a href="#" aria-current="page">Edit Webhook</a></li>
         </ul>
     </nav>
-
-    <div class="section">
-        <h3 class="title is-3">{{$webhook->name}}</h3>
-
-        <div class="section">
-            <div class="media">
-                <figure class="media-left">
-                    <p class="image is-64x64">
-                        @isset($webhook->avatar_url)
-                            <img class="image is-64x64 is-rounded" src="{{$webhook->avatar_url}}">
-                        @else
-                            <img class="image is-64x64 is-rounded" src="https://via.placeholder.com/150">
-                        @endisset
-                    </p>
-                </figure>
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                            {{$webhook->description}}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="section">
         <h3 id="edit-hook" class="title is-3">Edit Hook</h3>
         <form action="javascript:submitForm()">
@@ -209,7 +184,8 @@
             if (this.status === 200 && this.readyState === 4) {
                 let id = JSON.parse(xhr.responseText).id;
                 toastr.success('Hook updated');
-                window.location = `/dashboard/edit/${id}`;
+                document.querySelector('#frm_submit').classList.toggle('is-loading');
+                document.querySelector('#frm').disabled = false;
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
                 document.querySelector('#frm_submit').classList.toggle('is-loading');
