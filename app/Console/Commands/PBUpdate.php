@@ -41,7 +41,7 @@ class PBUpdate extends Command
                         foreach ($pbs['data'] as $pb) {
                             printf("Checking " . $pb['run']['id'] . "\r\n");
 
-                            if (isset($pb['run']['status'])
+                            if ($pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
                                 && isset($pb['run']['status']['verify-date'])
                                 && $pb['run']['status']['status'] === 'verified'
                                 && $this->parseTimeString($pb['run']['status']['verify-date']) > $this->parseTimeString($tracker->last_updated)) {
@@ -67,7 +67,7 @@ class PBUpdate extends Command
 
     private function fetchPersonalBests($uid)
     {
-        $data = Fetch::load("https://www.speedrun.com/api/v1/users/" . $uid . "/personal-bests");
+        $data = Fetch::load("https://www.speedrun.com/api/v1/users/" . $uid . "/personal-bests?embed=game,category");
 
         if ($data) {
             return json_decode($data, true);
@@ -76,8 +76,6 @@ class PBUpdate extends Command
 
     private function post_pb(Tracker $tracker, $pb)
     {
-        $game_data = json_decode(Fetch::load("https://www.speedrun.com/api/v1/games/" . $pb['run']['game']), true);
-
         $run_date = $pb['run']['submitted'];
         $run_url = $pb['run']['weblink'];
         $run_place = $pb['place'];
@@ -86,10 +84,10 @@ class PBUpdate extends Command
         if (!isset($run_comment) || empty($run_comment)) $run_comment = "-";
 
         $run_time = gmdate('H:i:s', floor(floatval($pb['run']['times']['primary_t'])));
-        $game_name = $game_data['data']['names']['international'];
-        $game_category = json_decode(Fetch::load("https://www.speedrun.com/api/v1/categories/" . $pb['run']['category']), true)['data']['name'];
-        $game_icon = $game_data['data']['assets']['icon']['uri'];
-        $game_cover = $game_data['data']['assets']['cover-medium']['uri'];
+        $game_name = $pb['game']['data']['names']['international'];
+        $game_category = $pb['category']['data']['name'];
+        $game_icon = $pb['game']['data']['assets']['icon']['uri'];
+        $game_cover = $pb['game']['data']['assets']['cover-medium']['uri'];
 
         $payload = array(
             "content" => "",
