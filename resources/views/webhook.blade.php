@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <link href="https://cdn.materialdesignicons.com/4.7.95/css/materialdesignicons.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
     <style>
         body {
@@ -120,7 +121,11 @@
         </fieldset>
     </div>
 </div>
-
+<script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script>
 
     document.querySelector('#frm_runners').addEventListener("keydown", (e) => {
@@ -146,9 +151,11 @@
                 document.querySelector('#runner_list').appendChild(node);
                 document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
                 document.querySelector('#frm_runnername').value = null;
+                toastr.success(`Runner ${data.src_name} added`);
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
                 document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
+                toastr.error(`Error adding runner`);
             }
         };
 
@@ -175,10 +182,12 @@
         xhr.onreadystatechange = function () {
             if (this.status === 200 && this.readyState === 4) {
                 this.affectedNode.remove();
+                toastr.success('Runner removed');
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
                 this.affectedNode.classList.toggle('is-loading');
                 this.affectedNode.disabled = false;
+                toastr.error('Failed to remove runner', xhr.statusText);
             }
         };
         let payload = {
@@ -199,11 +208,13 @@
         xhr.onreadystatechange = function () {
             if (this.status === 200 && this.readyState === 4) {
                 let id = JSON.parse(xhr.responseText).id;
+                toastr.success('Hook updated');
                 window.location = `/dashboard/edit/${id}`;
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
                 document.querySelector('#frm_submit').classList.toggle('is-loading');
                 document.querySelector('#frm').disabled = false;
+                toastr.error('Failed to update hook', xhr.statusText);
             }
         };
         let payload = {
