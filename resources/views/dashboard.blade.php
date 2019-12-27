@@ -38,7 +38,11 @@
                 <div class="media">
                     <figure class="media-left">
                         <p class="image is-64x64">
-                            <img class="image is-64x64 is-rounded" src="{{$webhook->avatar_url}}">
+                            @isset($webhook->avatar_url)
+                                <img class="image is-64x64 is-rounded" src="{{$webhook->avatar_url}}">
+                            @else
+                                <img class="image is-64x64 is-rounded" src="https://via.placeholder.com/150">
+                            @endisset
                         </p>
                     </figure>
                     <div class="media-content">
