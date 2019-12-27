@@ -87,10 +87,11 @@
         <h3 class="title is-3">Tracked Runners</h3>
         <div id="runner_list" class="buttons">
             @foreach($webhook->trackers->sortBy('src_name') as $tracker)
-                <span onclick="removeRunner(this)" data-tracker-id="{{$tracker->id}}"
-                      @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
-                      aria-disabled="true" @endif
-                      class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_name}}</span>
+                <button type="button" onclick="removeRunner(this)" data-tracker-id="{{$tracker->id}}"
+                        @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
+                        disabled
+                        aria-disabled="true" @endif
+                        class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_name}}</button>
             @endforeach
         </div>
         <fieldset id="frm_runners" @if($webhook->state === \App\Models\WebhookState::INVALIDATED) disabled
