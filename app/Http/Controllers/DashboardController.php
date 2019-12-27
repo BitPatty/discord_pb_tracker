@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tracker;
 use App\Models\Webhook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -21,7 +22,18 @@ class DashboardController extends Controller
     public function show(Request $request, Webhook $hook)
     {
         if (!Gate::allows('read', $hook)) abort(403);
+        $hook->load('trackers');
         return view('webhook', ['webhook' => $hook]);
+    }
+
+    public function deleteRunner(Request $request, Webhook $hook, Tracker $tracker)
+    {
+        return app(TrackerController::class)->delete($request, $tracker);
+    }
+
+    public function addRunner(Request $request, Webhook $hook)
+    {
+        return app(TrackerController::class)->create($request, $hook);
     }
 
     public function update(Request $request, Webhook $hook)

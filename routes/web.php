@@ -15,6 +15,10 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::patch('/dashboard/edit/{hook}', 'DashboardController@update');
     Route::get('/dashboard/edit/{hook}', 'DashboardController@show');
 
+    // Update Runners
+    Route::delete('/dashboard/edit/{hook}/{tracker}', 'DashboardController@deleteRunner');
+    Route::put('/dashboard/edit/{hook}', 'DashboardController@addRunner');
+
     // Get Token
     Route::get('/token', 'TokenController@generateToken');
 });

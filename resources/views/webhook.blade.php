@@ -89,10 +89,106 @@
             </fieldset>
         </form>
     </div>
+    <div class="section">
+        <h3 class="title is-3">Tracked Runners</h3>
+
+        <div id="runner_list" class="buttons">
+            @foreach($webhook->trackers->sortBy('src_name') as $tracker)
+                <span onclick="removeRunner(this)" data-tracker-id="{{$tracker->id}}"
+                      class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_name}}</span>
+            @endforeach
+        </div>
+
+        <fieldset id="frm_runners">
+            <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                    <input id="frm_runnername" name="frm_runnername" class="input" type="text" required
+                           aria-required="true"
+                           title="The runners speedrun.com username"
+                           pattern="([ ]*[A-Za-z0-9-_]+[ ]*)+"
+                           placeholder="psychonauter">
+                </div>
+                <p class="help">The runners speedrun.com username.</p>
+            </div>
+            <button id="frm_runners_submit" type="button" onclick="addRunner()" class="button is-primary">Add
+            </button>
+        </fieldset>
+    </div>
 </div>
 
 <script>
+
+    document.querySelector('#frm_runners').addEventListener("keydown", (e) => {
+        console.log(e);
+
+        if (e.keyCode == 13) {
+            addRunner();
+        }
+    })
+
+    function addRunner() {
+        document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
+
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.status === 200 && this.readyState === 4) {
+                const data = JSON.parse(this.responseText);
+                const node = document.createElement('span');
+                node.setAttribute('data-tracker-id', data.id);
+                node.setAttribute('class', 'button is-danger mdi mdi-trash-can-outline has-text-weight-bold');
+                node.setAttribute('onclick', 'removeRunner(this)');
+                node.innerHTML = data.src_name;
+                document.querySelector('#runner_list').appendChild(node);
+                document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
+                document.querySelector('#frm_runnername').value = null;
+            } else if (this.readyState === 4) {
+                console.log(xhr.responseText);
+                document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
+            }
+        };
+
+        let payload = {
+            runner: document.querySelector("#frm_runnername").value.trim(),
+            _token: document.querySelector("input[name='_token']").value
+        };
+
+        xhr.open('PUT', `#`, true);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.send(JSON.stringify(payload));
+    }
+
+    function removeRunner(e) {
+        const id = e.getAttribute('data-tracker-id');
+        if (!id) return;
+
+        let xhr = new XMLHttpRequest();
+        xhr.affectedNode = e;
+        xhr.affectedNode.classList.toggle('is-loading');
+        xhr.affectedNode.disabled = true;
+
+        xhr.affectedNode = e;
+        xhr.onreadystatechange = function () {
+            if (this.status === 200 && this.readyState === 4) {
+                this.affectedNode.remove();
+            } else if (this.readyState === 4) {
+                console.log(xhr.responseText);
+                this.affectedNode.classList.toggle('is-loading');
+                this.affectedNode.disabled = false;
+            }
+        };
+        let payload = {
+            runner: document.querySelector("#frm_runnername").value.trim(),
+            _token: document.querySelector("input[name='_token']").value
+        };
+
+        xhr.open('DELETE', `${window.location.href}/${id}`, true);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.send(JSON.stringify(payload));
+    }
+
     function submitForm() {
+        document.querySelector('#frm_submit').classList.toggle('is-loading');
         document.querySelector('#frm').disabled = true;
 
         let xhr = new XMLHttpRequest();
@@ -102,7 +198,8 @@
                 window.location = `/dashboard/edit/${id}`;
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
-                document.querySelector("#frm").disabled = false;
+                document.querySelector('#frm_submit').classList.toggle('is-loading');
+                document.querySelector('#frm').disabled = false;
             }
         };
         let payload = {

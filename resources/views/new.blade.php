@@ -70,6 +70,7 @@
 
 <script>
     function submitForm() {
+        document.querySelector('#frm_submit').classList.toggle('is-loading');
         document.querySelector('#frm').disabled = true;
 
         let xhr = new XMLHttpRequest();
@@ -79,7 +80,8 @@
                 window.location = `/dashboard/edit/${id}`;
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
-                document.querySelector("#frm").disabled = false;
+                document.querySelector('#frm_submit').classList.toggle('is-loading');
+                document.querySelector('#frm').disabled = false;
             }
         };
         let payload = {

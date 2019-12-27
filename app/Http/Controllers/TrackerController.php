@@ -29,49 +29,58 @@ class TrackerController extends Controller
         return $tracker;
     }
 
-    public function create(Request $request)
+    public function delete(Request $request, Tracker $tracker)
+    {
+        $tracker->delete();
+    }
+
+    public function create(Request $request, Webhook $hook)
     {
         $validator = Validator::make($request->post(), [
-            'hook' => 'required|numeric',
-            'runner' => 'required|alpha_num'
+            'runner' => 'required|regex:/^[a-zA-Z0-9-_]+$/u'
         ]);
 
         if ($validator->fails()) {
-            $messages = $validator->errors();
-            if ($messages->has('hook')) return response()->json(['status' => 422, 'message' => 'Invalid hook format (hook)'], 422);
-            elseif ($messages->has('runner')) return response()->json(['status' => 422, 'message' => 'Invalid runner format (runner)'], 422);
-        }
-
-        $hook_id = $request->post('hook');
-        $hook = Webhook::find($hook_id);
-
-        if (!isset($hook)) {
-            return response()->json(['status' => 422, 'message' => 'Webhook not registered'], 422);
+            return response()->json(['status' => 422, 'message' => 'Invalid runner format (runner)'], 422);
         }
 
         $runner_name = $request->post('runner');
-        $runner_data = Fetch::load('http://speedrun.com/api/v1/users/' . $runner_name);
-
-        if (!isset($runner_data)) {
-            return response()->json(['status' => 500, 'message' => 'Failed to load runner data'], 500);
-        }
-
-        $runner_data = json_decode($runner_data, true)['data'];
-
-        if (!$this->validateRunnerDetails($runner_data)) {
-            return response()->json(['status' => 500, 'message' => 'Invalid runner data received'], 500);
-        }
-
-        if (Tracker::where(['src_id' => $runner_data['id'], 'webhook_id' => $hook_id])->first() != null) {
-            return response()->json(['status' => 422, 'message' => 'Tracker is already in use'], 422);
-        }
-
+        $existingTracker = Tracker::where(['src_name' => $runner_name])->first();
         $tracker = new Tracker();
-        $tracker->src_name = $runner_data['names']['international'];
-        $tracker->src_id = $runner_data['id'];
-        $tracker->webhook_id = $hook_id;
-        $tracker->last_updated = new \DateTime();
-        $tracker->save();
+
+        if ($existingTracker) {
+            if (Tracker::where(['src_id' => $existingTracker->src_id, 'webhook_id' => $hook->id])->first() != null) {
+                return response()->json(['status' => 422, 'message' => 'Tracker is already in use'], 422);
+            }
+
+            $tracker->src_name = $existingTracker->src_name;
+            $tracker->src_id = $existingTracker->src_id;
+            $tracker->webhook_id = $hook->id;
+            $tracker->last_updated = new \DateTime();
+            $tracker->save();
+        } else {
+            $runner_data = Fetch::load('http://speedrun.com/api/v1/users/' . $runner_name);
+
+            if (!isset($runner_data)) {
+                return response()->json(['status' => 500, 'message' => 'Failed to load runner data'], 500);
+            }
+
+            $runner_data = json_decode($runner_data, true)['data'];
+
+            if (!$this->validateRunnerDetails($runner_data)) {
+                return response()->json(['status' => 500, 'message' => 'Invalid runner data received'], 500);
+            }
+
+            if (Tracker::where(['src_id' => $runner_data['id'], 'webhook_id' => $hook->id])->first() != null) {
+                return response()->json(['status' => 422, 'message' => 'Tracker is already in use'], 422);
+            }
+
+            $tracker->src_name = $runner_data['names']['international'];
+            $tracker->src_id = $runner_data['id'];
+            $tracker->webhook_id = $hook->id;
+            $tracker->last_updated = new \DateTime();
+            $tracker->save();
+        }
 
         return Tracker::find($tracker->id);
     }
