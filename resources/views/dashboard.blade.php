@@ -32,14 +32,14 @@
 
     <div class="section">
         <h3 class="title is-3">Hooks</h3>
-
         <div class="section">
             @foreach($webhooks as $webhook)
                 <div class="media">
                     <figure class="media-left">
                         <p class="image is-64x64">
                             @isset($webhook->avatar_url)
-                                <img class="image is-64x64 is-rounded" src="{{$webhook->avatar_url}}">
+                                <img class="image is-64x64 is-rounded"
+                                     src="https://cdn.discordapp.com/avatars/{{$webhook->discord_id}}/{{$webhook->avatar_url}}.png">
                             @else
                                 <img class="image is-64x64 is-rounded" src="https://via.placeholder.com/150">
                             @endisset
