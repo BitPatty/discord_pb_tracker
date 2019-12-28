@@ -38,23 +38,27 @@ class PBUpdate extends Command
                 })->get();
 
                 foreach ($trackers as $tracker) {
-                    try {
-                        foreach ($pbs['data'] as $pb) {
-                            printf("Checking " . $pb['run']['id'] . "\r\n");
 
-                            if ($pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
-                                && isset($pb['run']['status']['verify-date'])
-                                && $pb['run']['status']['status'] === 'verified'
-                                && $this->parseTimeString($pb['run']['status']['verify-date']) > $this->parseTimeString($tracker->last_updated)) {
+                    $tracker_dt = $this->parseTimeString($tracker->last_updated);
+
+                    foreach ($pbs['data'] as $pb) {
+                        printf("Checking " . $pb['run']['id'] . "\r\n");
+
+                        if ($pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
+                            && isset($pb['run']['status']['verify-date'])
+                            && $pb['run']['status']['status'] === 'verified'
+                            && $this->parseTimeString($pb['run']['status']['verify-date']) > $tracker_dt) {
+                            try {
                                 $tracker->last_updated = $fetch_dt;
                                 $tracker->save();
                                 printf("Posting PB: " . $pb['run']['id'] . "\r\n");
                                 $this->post_pb($tracker, $pb);
                                 sleep(2);
+                            } catch (\Exception $ex) {
                             }
                         }
-                    } catch (\Exception $ex) {
                     }
+
                 }
             }
         }
