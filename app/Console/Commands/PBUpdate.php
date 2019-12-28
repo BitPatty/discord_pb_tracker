@@ -26,6 +26,7 @@ class PBUpdate extends Command
         })->distinct()->get('src_id');
 
         foreach ($users as $user) {
+            sleep(1);
             printf("Updating PBs for user " . $user->src_id . "\r\n");
 
             $pbs = $this->fetchPersonalBests($user->src_id);
