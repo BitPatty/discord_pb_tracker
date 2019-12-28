@@ -46,15 +46,14 @@ class PBUpdate extends Command
                                 && isset($pb['run']['status']['verify-date'])
                                 && $pb['run']['status']['status'] === 'verified'
                                 && $this->parseTimeString($pb['run']['status']['verify-date']) > $this->parseTimeString($tracker->last_updated)) {
+                                $tracker->last_updated = $fetch_dt;
+                                $tracker->save();
                                 printf("Posting PB: " . $pb['run']['id'] . "\r\n");
                                 $this->post_pb($tracker, $pb);
                                 sleep(2);
                             }
                         }
                     } catch (\Exception $ex) {
-                    } finally {
-                        $tracker->last_updated = $fetch_dt;
-                        $tracker->save();
                     }
                 }
             }
