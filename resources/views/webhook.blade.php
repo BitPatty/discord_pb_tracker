@@ -45,7 +45,7 @@
                     <div class="control">
                         <input id="frm_name" name="frm_name" class="input" type="text" required aria-required="true"
                                title="The webhook name"
-                               pattern="([ ]*[A-Za-z0-9]+[ ]*)+"
+                               pattern="([ ]*[A-Za-z0-9\-_\.]+[ ]*)+"
                                placeholder="Captain Hook" value="{{$webhook->name}}">
                     </div>
                     <p class="help"></p>
@@ -106,10 +106,10 @@
                 <div class="field">
                     <label class="label">Name</label>
                     <div class="control">
-                        <input id="frm_runnername" name="frm_runnername" class="input" type="text" required
+                        <input id="frm_runnername" name="frm_runnername" class="input" type="text" maxlength="40" required
                                aria-required="true"
                                title="The runners speedrun.com username"
-                               pattern="([ ]*[A-Za-z0-9-_]+[ ]*)+"
+                               pattern="([ ]*[A-Za-z0-9\-\._]+[ ]*)+"
                                placeholder="psychonauter">
                     </div>
                     <p class="help">The runners speedrun.com username.</p>

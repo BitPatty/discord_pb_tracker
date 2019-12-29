@@ -40,7 +40,7 @@ class TrackerController extends Controller
         if (!Gate::allows('update', $hook)) abort(403);
 
         $validator = Validator::make($request->post(), [
-            'runner' => 'required|regex:/^[a-zA-Z0-9-_]+$/u'
+            'runner' => 'required|regex:/^[a-zA-Z0-9\-_\.]+$/u'
         ]);
 
         if ($validator->fails()) {

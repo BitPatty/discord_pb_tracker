@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Http\Fetch;
 use App\Models\Tracker;
-use App\Models\Webhook;
 use App\Models\WebhookState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -27,7 +26,7 @@ class PBUpdate extends Command
 
         foreach ($users as $user) {
             sleep(1);
-            printf("Updating PBs for user " . $user->src_id . "\r\n");
+            // printf("Updating PBs for user " . $user->src_id . "\r\n");
 
             $pbs = $this->fetchPersonalBests($user->src_id);
             $fetch_dt = new \DateTime();
@@ -42,7 +41,7 @@ class PBUpdate extends Command
                     $tracker_dt = $this->parseTimeString($tracker->last_updated);
 
                     foreach ($pbs['data'] as $pb) {
-                        printf("Checking " . $pb['run']['id'] . "\r\n");
+                        // printf("Checking " . $pb['run']['id'] . "\r\n");
 
                         if ($pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
                             && isset($pb['run']['status']['verify-date'])

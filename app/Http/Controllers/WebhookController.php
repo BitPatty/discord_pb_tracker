@@ -31,7 +31,7 @@ class WebhookController extends Controller
         if (!Gate::allows('update', $hook)) abort(403);
 
         $validator = Validator::make($request->post(), [
-            'name' => 'required|regex:/^[ a-zA-Z0-9]+$/u',
+            'name' => 'required|regex:/^[ a-zA-Z0-9\._\-]+$/u',
             'description' => 'max: 2048',
             'state' => 'required|in:ACTIVE,DEAD'
         ]);
