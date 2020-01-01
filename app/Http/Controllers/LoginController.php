@@ -58,4 +58,10 @@ class LoginController extends Controller
         auth()->login($dbUser);
         return redirect($this->redirectTo);
     }
+
+    public function logout(Request $request)
+    {
+        auth()->logout();
+        return redirect('/');
+    }
 }

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-@include('partials.header', ['title' => 'Dashboard'])
-<body class="is-widescreen level">
+@include('partials.html_head', ['title' => 'Dashboard'])
+<body class="is-widescreen">
 <div class="container">
-    <h1 class="title is-1">
-        Discord PB Tracker
-    </h1>
+    @include('partials.page_title')
+
     <h2 class="subtitle is-2">Dashboard</h2>
 
     <nav class="breadcrumb" aria-label="breadcrumbs">
@@ -16,8 +15,10 @@
     </nav>
 
     <div class="section">
-        <h3 class="title is-3">Hooks</h3>
-        <a href="/dashboard/new" class="button is-success">Add New</a>
+        <h3 class="title is-3">Your Hooks</h3>
+        <div class="container has-text-centered">
+            <a href="/dashboard/new" class="button is-success">Add New</a>
+        </div>
         <div class="section">
             @foreach($webhooks as $webhook)
                 <div class="media">

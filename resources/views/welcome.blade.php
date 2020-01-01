@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-@include('partials.header', ['title' => 'Discord PB Tracker'])
+@include('partials.html_head', ['title' => 'Discord PB Tracker'])
 <body class="hero is-fullheight is-default has-text-weight-bold">
 <div class="hero-body">
     <div class="container is-vcentered has-text-centered">

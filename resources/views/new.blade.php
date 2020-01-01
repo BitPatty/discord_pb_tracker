@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-@include('partials.header', ['title' => 'Add new Hook'])
-<body class="is-widescreen level">
+@include('partials.html_head', ['title' => 'Add new Hook'])
+<body class="is-widescreen">
 <div class="container">
-    <h1 class="title is-1">
-        Discord PB Tracker
-    </h1>
+    @include('partials.page_title')
     <h2 class="subtitle is-2">Add New Hook</h2>
 
     <nav class="breadcrumb" aria-label="breadcrumbs">

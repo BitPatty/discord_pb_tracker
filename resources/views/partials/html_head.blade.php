@@ -11,6 +11,5 @@
             padding: 15px;
         }
     </style>
-
     <title>{{ $title }}</title>
 </head>
