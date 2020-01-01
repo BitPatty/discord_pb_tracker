@@ -26,8 +26,6 @@ class PBUpdate extends Command
 
         foreach ($users as $user) {
             sleep(1);
-            // printf("Updating PBs for user " . $user->src_id . "\r\n");
-
             $pbs = $this->fetchPersonalBests($user->src_id);
             $fetch_dt = new \DateTime();
 
@@ -41,8 +39,6 @@ class PBUpdate extends Command
                     $tracker_dt = $this->parseTimeString($tracker->last_updated);
 
                     foreach ($pbs['data'] as $pb) {
-                        // printf("Checking " . $pb['run']['id'] . "\r\n");
-
                         if ($pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
                             && isset($pb['run']['status']['verify-date'])
                             && $pb['run']['status']['status'] === 'verified'
@@ -63,11 +59,33 @@ class PBUpdate extends Command
         }
     }
 
+    /**
+     * Truncates the comment string if necessary to avoid
+     * exceeding discords character limit on field values
+     * @param $comment string The comment to prepare
+     * @return string Returns the (truncated) comment
+     */
+    private function prepareComment($comment)
+    {
+        if (strlen($comment) > 980) return substr($comment, 0, 970) . '...';
+        return $comment;
+    }
+
+    /**
+     * Parses a datetime string to it's object equivalent
+     * @param $dt string The datetime string
+     * @return mixed The date
+     */
     private function parseTimeString($dt)
     {
         return Carbon::parse($dt);
     }
 
+    /**
+     * Fetches the personal bests for the given user
+     * @param $uid string The speedrun.com user id
+     * @return mixed Returns the users deserialized PB's
+     */
     private function fetchPersonalBests($uid)
     {
         $data = Fetch::load("https://www.speedrun.com/api/v1/users/" . $uid . "/personal-bests?embed=game,category");
@@ -77,6 +95,11 @@ class PBUpdate extends Command
         }
     }
 
+    /**
+     * Posts a PB with the given tracker
+     * @param Tracker $tracker The tracker
+     * @param $pb mixed The run
+     */
     private function post_pb(Tracker $tracker, $pb)
     {
         $run_date = $pb['run']['submitted'];
@@ -120,7 +143,7 @@ class PBUpdate extends Command
                     "fields" => array(
                         array(
                             "name" => $game_name . " - " . $game_category . " in " . $run_time . "!",
-                            "value" => "Rank: $run_place, Comment: $run_comment",
+                            "value" => "Rank: $run_place, Comment: " . $this->prepareComment($run_comment),
                             "inline" => true
                         )
                     )
