@@ -18,6 +18,9 @@ class PBUpdate extends Command
         parent::__construct();
     }
 
+    /**
+     * Loads the PBs and posts triggers the Discord webhooks if necessary
+     */
     public function handle()
     {
         $users = Tracker::whereHas('webhook', function ($q) {
@@ -73,8 +76,8 @@ class PBUpdate extends Command
 
     /**
      * Parses a datetime string to it's object equivalent
-     * @param $dt string The datetime string
-     * @return mixed The date
+     * @param $dt mixed The datetime string
+     * @return Carbon The parsed date
      */
     private function parseTimeString($dt)
     {

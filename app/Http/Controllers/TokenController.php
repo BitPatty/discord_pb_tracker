@@ -12,6 +12,11 @@ class TokenController extends Controller
     {
     }
 
+    /**
+     * Generates and returns a new token for the current user
+     * @param Request $request The request
+     * @return \Illuminate\Http\JsonResponse Returns the new token
+     */
     public function generateToken(Request $request)
     {
         $token = Str::random(60);
@@ -20,6 +25,6 @@ class TokenController extends Controller
         $currentUser->api_token = hash('sha256', $token);
         $currentUser->save();
 
-        return ['token' => $token];
+        return response()->json(['token' => $token]);
     }
 }

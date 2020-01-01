@@ -17,6 +17,9 @@ class WebhookUpdate extends Command
         parent::__construct();
     }
 
+    /**
+     * Updates and (in)validates existing hooks
+     */
     public function handle()
     {
         printf("Loading hooks\r\n");
@@ -25,8 +28,8 @@ class WebhookUpdate extends Command
         foreach ($hooks as $hook) {
             $hook_data = Fetch::load($hook->url);
 
-            printf('Updating hook (id: ' . $hook->id . ', discord_id: ' . $hook->discord_id . ') at ' . $hook->url . "\r\n");
             sleep(1);
+            printf('Updating hook (id: ' . $hook->id . ', discord_id: ' . $hook->discord_id . ') at ' . $hook->url . "\r\n");
 
             if ($hook_data) {
                 $hook_data = json_decode($hook_data, true);
@@ -47,11 +50,23 @@ class WebhookUpdate extends Command
         }
     }
 
+    /**
+     * Checks whether the webhook data returned by discord
+     * contains an invalidation code
+     * @param $data mixed The discord data
+     * @return bool Returns true if the webhook is invalid
+     */
     private function isWebhookInvalid($data)
     {
         return isset($data['code']) && $data['code'] === 10015;
     }
 
+    /**
+     * Validates whether the webhook data returned by discord
+     * can be processed
+     * @param $data mixed The discord data
+     * @return bool Returns true if the validation succeeds
+     */
     private function validateWebhookDetails($data)
     {
         return (

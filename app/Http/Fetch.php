@@ -4,6 +4,12 @@ namespace App\Http;
 
 class Fetch
 {
+    /**
+     * Fetch the specified URL
+     * @param string $url The target url
+     * @param array|null $customHeaders Custom headers (optional)
+     * @return mixed Returns the response
+     */
     public static function load(string $url, array $customHeaders = null)
     {
         $ch = curl_init();

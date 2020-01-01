@@ -19,6 +19,10 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * Redirect the user to the discord OAUTH page
+     * @return mixed
+     */
     public function redirectToProvider()
     {
         return Socialite::with('discord')
@@ -26,6 +30,11 @@ class LoginController extends Controller
             ->redirect();
     }
 
+    /**
+     * Authenticates the user based on the discord response
+     * @param Request $request The request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function handleProviderCallback(Request $request)
     {
         if (!$request->input('code')) {
@@ -33,20 +42,20 @@ class LoginController extends Controller
         }
 
         $user = Socialite::driver('discord')->user();
-        $existingUser = User::where(['discord_id' => $user->getId()])->first();
-        if (!$existingUser) {
-            $existingUser = new User();
-            $existingUser->discord_id = $user->getId();
-            $existingUser->name = $user->getNickname();
-            $existingUser->avatar_url = $user->getAvatar();
-            $existingUser->save();
+        $dbUser = User::where(['discord_id' => $user->getId()])->first();
+        if (!$dbUser) {
+            $dbUser = new User();
+            $dbUser->discord_id = $user->getId();
+            $dbUser->name = $user->getNickname();
+            $dbUser->avatar_url = $user->getAvatar();
+            $dbUser->save();
         } else {
-            $existingUser->name = $user->getNickname();
-            $existingUser->avatar_url = $user->getAvatar();
-            $existingUser->save();
+            $dbUser->name = $user->getNickname();
+            $dbUser->avatar_url = $user->getAvatar();
+            $dbUser->save();
         }
 
-        auth()->login($existingUser);
+        auth()->login($dbUser);
         return redirect($this->redirectTo);
     }
 }

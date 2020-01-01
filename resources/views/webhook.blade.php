@@ -1,26 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-    <link href="https://cdn.materialdesignicons.com/4.7.95/css/materialdesignicons.min.css" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            padding: 15px;
-        }
-    </style>
-    <title>Edit Webhook {{$webhook->name}}</title>
-</head>
+@include('partials.header', ['title' => 'Edit Hook: ' . $webhook->name])
 <body class="is-widescreen level">
 <div class="container">
     <h1 class="title is-1">
         Discord PB Tracker
     </h1>
-    <h2 class="subtitle is-2">Dashboard</h2>
+    <h2 class="subtitle is-2">Edit Hook</h2>
 
     <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
@@ -40,33 +26,9 @@
             <fieldset id="frm" @if($webhook->state === \App\Models\WebhookState::INVALIDATED) disabled
                       aria-disabled="true" @endif>
                 @csrf
-                <div class="field">
-                    <label for="frm_name" class="label">Name</label>
-                    <div class="control">
-                        <input id="frm_name" name="frm_name" class="input" type="text" required aria-required="true" maxlength="40"
-                               title="The webhook name"
-                               pattern="([ ]*[A-Za-z0-9\-_\.]+[ ]*)+"
-                               placeholder="Captain Hook" value="{{$webhook->name}}">
-                    </div>
-                    <p class="help"></p>
-                </div>
-                <div class="field">
-                    <label for="frm_url" class="label">Discord URL</label>
-                    <div class="control">
-                        <input id="frm_url" name="frm_url" class="input" type="url" required aria-required="true"
-                               title="The webhook url"
-                               pattern="^[ ]*(https://discordapp\.com/api/webhooks[/a-zA-Z0-9\-_]+)[ ]*$"
-                               value="{{$webhook->url}}" disabled aria-disabled="true">
-                    </div>
-                </div>
-                <div class="field ">
-                    <label for="frm_desc" class="label">Description</label>
-                    <div class="control">
-                        <textarea id="frm_desc" name="frm_desc" class="textarea"
-                                  placeholder="PB Tracker for my server"
-                                  maxlength="2048">{{$webhook->description}}</textarea>
-                    </div>
-                </div>
+                @include('partials.field_hook_name', ['value' => $webhook->name])
+                @include('partials.field_hook_url', ['value' => $webhook->url, 'disabled' => true])
+                @include('partials.field_hook_desc', ['value' => $webhook->description])
                 <div class="field ">
                     <label for="frm_state" class="label">State</label>
                     <div class="control">
@@ -106,7 +68,8 @@
                 <div class="field">
                     <label class="label">Name</label>
                     <div class="control">
-                        <input id="frm_runnername" name="frm_runnername" class="input" type="text" maxlength="40" required
+                        <input id="frm_runnername" name="frm_runnername" class="input" type="text" maxlength="40"
+                               required
                                aria-required="true"
                                title="The runners speedrun.com username"
                                pattern="([ ]*[A-Za-z0-9\-\._]+[ ]*)+"

@@ -15,6 +15,11 @@ class TrackerController extends Controller
     {
     }
 
+    /**
+     * Returns the trackers managed by the current user
+     * @param Request $request The request
+     * @return mixed Returns the users trackers
+     */
     public function index(Request $request)
     {
         $uid = $request->user()->id;
@@ -23,18 +28,34 @@ class TrackerController extends Controller
         })->get();
     }
 
+    /**
+     * Returns the tracker if the current user has the READ permission
+     * @param Tracker $tracker The tracker
+     * @return Tracker Returns the tracker
+     */
     public function show(Tracker $tracker)
     {
         if (!Gate::allows('read', $tracker)) abort(403);
         return $tracker;
     }
 
+    /**
+     * Deletes the tracker if the current user has the DELETE permission
+     * @param Tracker $tracker The tracker
+     */
     public function delete(Tracker $tracker)
     {
         if (!Gate::allows('delete', $tracker)) abort(403);
         $tracker->delete();
     }
 
+    /**
+     * Creates a new trackers if the current user has the UPDATE permission
+     * on the hook
+     * @param Request $request The request
+     * @param Webhook $hook The associated webhook
+     * @return \Illuminate\Http\JsonResponse Returns the tracker
+     */
     public function create(Request $request, Webhook $hook)
     {
         if (!Gate::allows('update', $hook)) abort(403);
@@ -88,6 +109,12 @@ class TrackerController extends Controller
         return Tracker::find($tracker->id);
     }
 
+    /**
+     * Validates whether the runner data returned by speedrun.com
+     * can be processed
+     * @param $runner mixed The runner
+     * @return bool Returns true if the validation succeeds
+     */
     private function validateRunnerDetails($runner)
     {
         return (
