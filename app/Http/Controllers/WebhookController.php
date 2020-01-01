@@ -22,6 +22,8 @@ class WebhookController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->is_global_admin) return Webhook::all();
+
         return Webhook::where(['manager_id' => $request->user()->id])->get();
     }
 

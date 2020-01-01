@@ -22,6 +22,8 @@ class TrackerController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->is_global_admin) return Tracker::all();
+
         $uid = $request->user()->id;
         return Tracker::whereHas('webhook', function ($q) use ($uid) {
             $q->where(['manager_id' => $uid]);
