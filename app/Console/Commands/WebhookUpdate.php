@@ -29,7 +29,7 @@ class WebhookUpdate extends Command
             $hook_data = Fetch::load($hook->url);
 
             sleep(1);
-            printf('Updating hook (id: ' . $hook->id . ', discord_id: ' . $hook->discord_id . ') at ' . $hook->url . "\r\n");
+            printf('Updating hook (id: ' . $hook->id . ', discord_id: ' . $hook->discord_id . ")\r\n");
 
             if ($hook_data) {
                 $hook_data = json_decode($hook_data, true);
