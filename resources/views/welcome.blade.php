@@ -22,6 +22,5 @@
     </div>
     @endauth
 </div>
-</div>
 </body>
 </html>

@@ -81,6 +81,7 @@
         @endif
     </div>
 </div>
+</body>
 <script
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -192,5 +193,4 @@
         xhr.send(JSON.stringify(payload));
     }
 </script>
-</body>
 </html>
