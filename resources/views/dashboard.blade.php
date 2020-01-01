@@ -36,7 +36,7 @@
                             <p>
                                 <strong>{{$webhook->name}}</strong> @include('partials.hook_status_indicator', ['state' => $webhook->state])
                                 <small
-                                    class="is-italic">{{$webhook->discord_id}}</small>
+                                    class="is-italic">@isset($webhook->manager) {{ $webhook->manager->name }} @endisset</small>
                                 <br>
                                 {{$webhook->description}}
                             </p>

@@ -6,8 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Webhook extends Model
 {
-    public function trackers() {
+    public function trackers()
+    {
         return $this->hasMany('\App\Models\Tracker', 'webhook_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo('\App\Models\User', 'manager_id');
     }
 
     protected $fillable = [
