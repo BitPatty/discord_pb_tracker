@@ -2,7 +2,7 @@
 <html lang="en">
 @include('partials.html_head', ['title' => 'Add new Hook'])
 <body class="is-widescreen">
-<main class="container">
+<main class="container section">
     @include('partials.page_title')
     <h2 class="subtitle is-2">Add New Hook</h2>
 
