@@ -43,9 +43,15 @@
                 toastr.success('Hook added');
             } else if (this.readyState === 4) {
                 console.log(xhr.responseText);
+                let errorMessage = xhr.statusText;
+                try {
+                    const msg = JSON.parse(xhr.responseText).message;
+                    if (msg) errorMessage = msg;
+                } catch {
+                }
                 document.querySelector('#frm_submit').classList.toggle('is-loading');
                 document.querySelector('#frm').disabled = false;
-                toastr.error('Failed to create hook', xhr.statusText);
+                toastr.error(errorMessage, 'Failed to create hook');
             }
         };
         let payload = {

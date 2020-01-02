@@ -42,7 +42,7 @@ class WebhookUpdate extends Command
                     $hook->discord_id = $hook_data['id'];
                     $hook->channel_id = $hook_data['channel_id'];
                     $hook->guild_id = $hook_data['guild_id'];
-                    $hook->avatar_url = 'https://cdn.discordapp.com/avatars/' . $hook_data['id'] . '/' . $hook_data['avatar'] . '.png';
+                    $hook->avatar_url = isset($hook_data['avatar']) ? 'https://cdn.discordapp.com/avatars/' . $hook_data['id'] . '/' . $hook_data['avatar'] . '.png' : null;
                     $hook->save();
                     printf("Hook updated\r\n");
                 }

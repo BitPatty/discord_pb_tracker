@@ -96,6 +96,19 @@
         }
     });
 
+    function postError(title, text, fallback) {
+        try {
+            const msg = JSON.parse(text).message;
+            if (msg) {
+                toastr.error(msg, title);
+                return;
+            }
+        } catch {
+        }
+
+        toastr.error(fallback, title);
+    }
+
     function addRunner() {
         document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
 
@@ -113,9 +126,8 @@
                 document.querySelector('#frm_runnername').value = null;
                 toastr.success(`Runner ${data.src_name} added`);
             } else if (this.readyState === 4) {
-                console.log(xhr.responseText);
                 document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
-                toastr.error(`Error adding runner`);
+                postError('Failed to add runner', xhr.responseText, xhr.statusText);
             }
         };
 
@@ -146,10 +158,9 @@
                 this.affectedNode.remove();
                 toastr.success('Runner removed');
             } else if (this.readyState === 4) {
-                console.log(xhr.responseText);
                 this.affectedNode.classList.toggle('is-loading');
                 this.affectedNode.disabled = false;
-                toastr.error('Failed to remove runner', xhr.statusText);
+                postError('Failed to remove runner', xhr.responseText, xhr.statusText);
             }
         };
         let payload = {
@@ -174,10 +185,9 @@
                 document.querySelector('#frm_submit').classList.toggle('is-loading');
                 document.querySelector('#frm').disabled = false;
             } else if (this.readyState === 4) {
-                console.log(xhr.responseText);
                 document.querySelector('#frm_submit').classList.toggle('is-loading');
                 document.querySelector('#frm').disabled = false;
-                toastr.error('Failed to update hook', xhr.statusText);
+                postError('Failed to update hook', xhr.responseText, xhr.statusText);
             }
         };
 

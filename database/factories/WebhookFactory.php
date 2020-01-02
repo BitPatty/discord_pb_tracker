@@ -11,7 +11,7 @@ $factory->define(App\Models\Webhook::class, function (Faker $faker) {
         'channel_id' => $faker->numberBetween(1, 9999999),
         'guild_id' => $faker->numberBetween(1, 9999999),
         'name' => $faker->userName,
-        'avatar_url' => $faker->imageUrl(),
+        'avatar_url' => null,
         'state' => 'CREATED',
         'url' => $faker->url()
     ];
