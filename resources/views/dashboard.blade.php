@@ -23,12 +23,12 @@
             @foreach($webhooks as $webhook)
                 <div class="media">
                     <figure class="media-left">
-                        @if(isset($webhook->avatar_url))
+                        @isset($webhook->avatar_url)
                             <img class="image hook-avatar"
                                  src="{{$webhook->avatar_url}}">
                         @else
                             <img class="image hook-avatar" src="/img/no_img.svg">
-                        @endif
+                        @endisset
                     </figure>
                     <div class="media-content">
                         <div class="content">
