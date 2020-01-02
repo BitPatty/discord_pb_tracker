@@ -7,11 +7,6 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <link href="https://cdn.materialdesignicons.com/4.7.95/css/materialdesignicons.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            padding: 15px;
-        }
-    </style>
+    <link href="/style.css" rel="stylesheet">
     <title>{{ $title }}</title>
 </head>

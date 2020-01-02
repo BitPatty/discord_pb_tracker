@@ -2,7 +2,7 @@
 <html lang="en">
 @include('partials.html_head', ['title' => 'Edit Hook: ' . $webhook->name])
 <body class="is-widescreen">
-<div class="container">
+<main class="container">
     @include('partials.page_title')
     <h2 class="subtitle is-2">Edit Hook</h2>
 
@@ -80,7 +80,7 @@
             </fieldset>
         @endif
     </div>
-</div>
+</main>
 </body>
 <script
     src="https://code.jquery.com/jquery-3.4.1.min.js"

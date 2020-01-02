@@ -2,7 +2,7 @@
 <html lang="en">
 @include('partials.html_head', ['title' => 'Add new Hook'])
 <body class="is-widescreen">
-<div class="container">
+<main class="container">
     @include('partials.page_title')
     <h2 class="subtitle is-2">Add New Hook</h2>
 
@@ -23,7 +23,7 @@
             <button id="frm_submit" type="submit" class="button is-primary">Submit</button>
         </fieldset>
     </form>
-</div>
+</main>
 </body>
 <script
     src="https://code.jquery.com/jquery-3.4.1.min.js"

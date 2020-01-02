@@ -2,7 +2,7 @@
 <html lang="en">
 @include('partials.html_head', ['title' => 'Discord PB Tracker'])
 <body class="hero is-fullheight is-default has-text-weight-bold">
-<div class="hero-body">
+<main class="hero-body">
     <div class="container is-vcentered has-text-centered">
         <h1 class="title is-1">
             Discord PB Tracker
@@ -21,6 +21,6 @@
             </div>
     </div>
     @endauth
-</div>
+</main>
 </body>
 </html>

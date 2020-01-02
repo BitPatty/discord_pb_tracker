@@ -2,7 +2,7 @@
 <html lang="en">
 @include('partials.html_head', ['title' => 'Dashboard'])
 <body class="is-widescreen">
-<div class="container">
+<main class="container">
     @include('partials.page_title')
 
     <h2 class="subtitle is-2">Dashboard</h2>
@@ -23,14 +23,12 @@
             @foreach($webhooks as $webhook)
                 <div class="media">
                     <figure class="media-left">
-                        <p class="image is-64x64">
                             @isset($webhook->avatar_url)
-                                <img class="image is-64x64 is-rounded"
+                                <img class="image hook-avatar"
                                      src="{{$webhook->avatar_url}}">
                             @else
                                 <img class="image is-64x64 is-rounded" src="https://via.placeholder.com/150">
                             @endisset
-                        </p>
                     </figure>
                     <div class="media-content">
                         <div class="content">
@@ -58,6 +56,8 @@
             @endforeach
         </div>
     </div>
-</div>
+</main>
+@include('partials.footer')
 </body>
+
 </html>
