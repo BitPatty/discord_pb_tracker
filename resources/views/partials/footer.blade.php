@@ -1,11 +1,7 @@
-
 <footer class="is-fullwidth has-text-centered">
     <div class="is-inline-block">
         <p>
-            <span>Built with <3 by
-            <a title="Twitter" target="_blank" rel="noreferrer" href="https://twitter.com/psychonauter">
-                Psychonauter</a>
-            </span>
+            <span>Built with <3 by Psychonauter</span>
             <span>
                 <a class="button" target="_blank" href="https://www.buymeacoffee.com/BitPatty">
                 <img class="image is-32x32"
