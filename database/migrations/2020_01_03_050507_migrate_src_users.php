@@ -53,6 +53,6 @@ class MigrateSRCUsers extends Migration
 
     public function down()
     {
-
+        // omitted
     }
 }
