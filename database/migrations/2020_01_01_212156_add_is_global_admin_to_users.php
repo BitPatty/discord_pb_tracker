@@ -9,13 +9,9 @@ class AddIsGlobalAdminToUsers extends Migration
 {
     public function up()
     {
-        DB::enableQueryLog();
-
         Schema::table('t_user', function (Blueprint $table) {
             $table->boolean('is_global_admin')->default(false);
         });
-
-        dd(DB::getQueryLog());
     }
 
     public function down()

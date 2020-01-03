@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Fetch;
+use App\Models\SRCUser;
 use App\Models\Tracker;
 use App\Models\Webhook;
 use Illuminate\Http\Request;
@@ -71,19 +72,11 @@ class TrackerController extends Controller
         }
 
         $runner_name = $request->post('runner');
-        $existingTracker = Tracker::where(['src_name' => $runner_name])->first();
-        $tracker = new Tracker();
+        $srcUser = SRCUser::where(['src_name' => $runner_name])->first();
 
-        if ($existingTracker) {
-            if (Tracker::where(['src_id' => $existingTracker->src_id, 'webhook_id' => $hook->id])->first() != null) {
-                return response()->json(['status' => 422, 'message' => 'Tracker is already in use'], 422);
-            }
-
-            $tracker->src_name = $existingTracker->src_name;
-            $tracker->src_id = $existingTracker->src_id;
-            $tracker->webhook_id = $hook->id;
-            $tracker->last_updated = new \DateTime();
-            $tracker->save();
+        if (isset($srcUser)) {
+            $existingTracker = Tracker::where(['src_user_id' => $srcUser->id, 'webhook_id' => $hook->id])->first();
+            if (isset($existingTracker)) return response()->json(['status' => 422, 'message' => 'Tracker is already in use'], 422);
         } else {
             $runner_data = Fetch::load('http://speedrun.com/api/v1/users/' . $runner_name);
 
@@ -97,18 +90,20 @@ class TrackerController extends Controller
                 return response()->json(['status' => 500, 'message' => 'Invalid runner data received'], 500);
             }
 
-            if (Tracker::where(['src_id' => $runner_data['id'], 'webhook_id' => $hook->id])->first() != null) {
-                return response()->json(['status' => 422, 'message' => 'Tracker is already in use'], 422);
-            }
-
-            $tracker->src_name = $runner_data['names']['international'];
-            $tracker->src_id = $runner_data['id'];
-            $tracker->webhook_id = $hook->id;
-            $tracker->last_updated = new \DateTime();
-            $tracker->save();
+            $srcUser = new SRCUser();
+            $srcUser->src_name = $runner_data['names']['international'];
+            $srcUser->src_id = $runner_data['id'];
+            $srcUser->save();
+            $srcUser = SRCUser::where(['src_id' => $runner_data['id']])->first();
         }
 
-        return Tracker::find($tracker->id);
+        $tracker = new Tracker();
+        $tracker->src_user_id = $srcUser->id;
+        $tracker->webhook_id = $hook->id;
+        $tracker->last_updated = new \DateTime();
+        $tracker->save();
+
+        return response()->json(Tracker::with(['src_user'])->where(['src_user_id' => $srcUser->id, 'webhook_id' => $hook->id])->first());
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Fetch;
+use App\Models\SRCUser;
 use App\Models\Tracker;
 use App\Models\WebhookState;
 use Carbon\Carbon;
@@ -19,26 +20,29 @@ class PBUpdate extends Command
     }
 
     /**
-     * Loads the PBs and posts triggers the Discord webhooks if necessary
+     * Loads the PBs, updates usernames and triggers the Discord webhooks if necessary
      */
     public function handle()
     {
-        $users = Tracker::whereHas('webhook', function ($q) {
-            $q->where(['state' => WebhookState::ACTIVE]);
-        })->distinct()->get('src_id');
+        $users = SRCUser::all();
 
         foreach ($users as $user) {
             sleep(1);
             $pbs = $this->fetchPersonalBests($user->src_id);
             $fetch_dt = new \DateTime();
 
-            if ($pbs) {
-                $trackers = $users = Tracker::with('webhook')->where(['src_id' => $user->src_id])->whereHas('webhook', function ($q) {
+            if (isset($pbs) && isset($pbs['data']) && is_array($pbs['data']) && count($pbs['data']) > 0) {
+                $userName = $this->findPlayerName($pbs['data'][0]['players']['data'], $user->src_id);
+                if ($userName !== $user->src_name && ($userName) && !empty($userName)) {
+                    $user->src_name = $userName;
+                    $user->save();
+                }
+
+                $trackers = $users = Tracker::with(['webhook', 'src_user'])->where(['src_user_id' => $user->id])->whereHas('webhook', function ($q) {
                     $q->where(['state' => WebhookState::ACTIVE]);
                 })->get();
 
                 foreach ($trackers as $tracker) {
-
                     $tracker_dt = $this->parseTimeString($tracker->last_updated);
 
                     foreach ($pbs['data'] as $pb) {
@@ -56,10 +60,24 @@ class PBUpdate extends Command
                             }
                         }
                     }
-
                 }
             }
         }
+    }
+
+    /**
+     * Finds the players name in a collection of players
+     * @param $players array The player list
+     * @param $id mixed The users id
+     * @return mixed Returns the users name
+     */
+    private function findPlayerName($players, $id)
+    {
+        foreach ($players as $player) {
+            if ($player['id'] === $id) return $player['names']['international'];
+        }
+
+        return null;
     }
 
     /**
@@ -91,7 +109,7 @@ class PBUpdate extends Command
      */
     private function fetchPersonalBests($uid)
     {
-        $data = Fetch::load("https://www.speedrun.com/api/v1/users/" . $uid . "/personal-bests?embed=game,category");
+        $data = Fetch::load("https://www.speedrun.com/api/v1/users/" . $uid . "/personal-bests?embed=players,game,category");
 
         if ($data) {
             return json_decode($data, true);
@@ -138,7 +156,7 @@ class PBUpdate extends Command
                     ),
 
                     "author" => array(
-                        "name" => "New PB by " . $tracker->src_name,
+                        "name" => "New PB by " . $tracker->src_user->src_name,
                         "url" => $run_url,
                         "icon_url" => "https://pbs.twimg.com/profile_images/500500884757831682/L0qajD-Q_400x400.png"
                     ),

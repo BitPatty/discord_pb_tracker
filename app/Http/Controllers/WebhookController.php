@@ -23,8 +23,7 @@ class WebhookController extends Controller
     public function index(Request $request)
     {
         if ($request->user()->is_global_admin) return Webhook::all();
-
-        return Webhook::where(['manager_id' => $request->user()->id])->get();
+        return response()->json(Webhook::where(['manager_id' => $request->user()->id])->get());
     }
 
     /**
@@ -36,7 +35,7 @@ class WebhookController extends Controller
     public function show(Request $request, Webhook $hook)
     {
         if (!Gate::allows('read', $hook)) abort(403);
-        return $hook;
+        return response()->json($hook);
     }
 
     /**
@@ -67,7 +66,7 @@ class WebhookController extends Controller
         $hook->state = $request->post('state');
         $hook->save();
 
-        return Webhook::find($hook->id);
+        return response()->json(Webhook::find($hook->id));
     }
 
     /**
@@ -149,7 +148,7 @@ class WebhookController extends Controller
         $hook->state = WebhookState::CREATED;
         $hook->save();
 
-        return Webhook::find($hook->id);
+        return response()->json(Webhook::where(['discord_id' => $webhook_data['id']])->first());
     }
 
     /**
