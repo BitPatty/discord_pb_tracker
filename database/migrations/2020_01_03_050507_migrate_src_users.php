@@ -29,11 +29,13 @@ class MigrateSRCUsers extends Migration
 
             if (isset($u)) {
                 $tracker->src_user_id = $u->id;
+                $tracker->save();
             } else {
                 $u = new SRCUser();
                 $u->src_id = $tracker->src_id;
                 $u->src_name = $tracker->src_name;
                 $u->save();
+                $u = SRCUser::where(['src_id' => $u->src_id])->first();
                 $tracker->src_user_id = $u->id;
                 $tracker->save();
             }
