@@ -1,11 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "BitPatty/discord_pb_tracker",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": [
-        "framework",
-        "laravel"
-    ],
+    "description": "A speedrun.com PB tracker for use with discord.",
     "license": "MIT",
     "require": {
         "php": "^7.2",
