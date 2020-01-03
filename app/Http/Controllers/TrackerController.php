@@ -88,7 +88,7 @@ class TrackerController extends Controller
 
             if (!isset($runner_data) || !isset($runner_data['data'])) {
                 if (isset($runner_data) && ($runner_data['status']) && $runner_data['status'] === 404) {
-                    return response()->json(['status' => 422, 'message' => 'Runner not found'], 500);
+                    return response()->json(['status' => 422, 'message' => 'Runner not found'], 422);
                 } else {
                     return response()->json(['status' => 500, 'message' => 'Failed to load runner data'], 500);
                 }
