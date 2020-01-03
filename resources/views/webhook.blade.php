@@ -53,7 +53,7 @@
     <div class="section">
         <h3 class="title is-3">Tracked Runners</h3>
         <div id="runner_list" class="buttons">
-            @foreach($webhook->trackers->sortBy('src_name') as $tracker)
+            @foreach($webhook->trackers->sortBy(function ($tracker) { return strtoupper($tracker->src_user->src_name); }) as $tracker)
                 <button type="button" onclick="removeRunner(this)" data-tracker-id="{{$tracker->id}}"
                         @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
                         disabled
