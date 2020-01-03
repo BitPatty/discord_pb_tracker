@@ -50,7 +50,7 @@ class WebhookController extends Controller
         if (!Gate::allows('update', $hook)) abort(403);
 
         $validator = Validator::make($request->post(), [
-            'name' => 'required|regex:/^[ a-zA-Z0-9\._\-]+$/u',
+            'name' => 'required|regex:/^([^ ]+[ ]*)+$/u',
             'description' => 'max: 2048',
             'state' => 'required|in:ACTIVE,DEAD'
         ]);
@@ -115,7 +115,7 @@ class WebhookController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->post(), [
-            'name' => 'required|regex:/^[a-zA-Z0-9 -_\.]+$/u',
+            'name' => 'required|regex:([^ ]+[ ]*)+',
             'url' => 'required|regex:/^https\:\/\/discordapp\.com\/api\/webhooks[\/a-zA-Z0-9\-_]+$/u',
             'description' => 'max: 2048'
         ]);
