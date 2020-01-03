@@ -12,7 +12,7 @@ class Tracker extends Model
     }
 
     protected $fillable = [
-        'src_name', 'src_id', 'webhook_id', 'last_updated'
+        'src_user_id', 'webhook_id', 'last_updated'
     ];
 
     protected $table = "t_tracker";
