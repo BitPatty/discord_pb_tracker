@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class SRCUser extends Model
 {
+    public function trackers()
+    {
+        return $this->hasMany('\App\Models\Tracker', 'src_user_id');
+    }
+
     protected $fillable = [
         'src_name', 'src_id'
     ];

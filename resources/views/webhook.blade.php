@@ -58,7 +58,7 @@
                         @if($webhook->state === \App\Models\WebhookState::INVALIDATED)
                         disabled
                         aria-disabled="true" @endif
-                        class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_name}}</button>
+                        class="button is-danger mdi mdi-trash-can-outline has-text-weight-bold">{{$tracker->src_user->src_name}}</button>
             @endforeach
         </div>
         @if($webhook->state !== \App\Models\WebhookState::INVALIDATED)
@@ -120,11 +120,11 @@
                 node.setAttribute('data-tracker-id', data.id);
                 node.setAttribute('class', 'button is-danger mdi mdi-trash-can-outline has-text-weight-bold');
                 node.setAttribute('onclick', 'removeRunner(this)');
-                node.innerHTML = data.src_name;
+                node.innerHTML = data.src_user.src_name;
                 document.querySelector('#runner_list').appendChild(node);
                 document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
                 document.querySelector('#frm_runnername').value = null;
-                toastr.success(`Runner ${data.src_name} added`);
+                toastr.success(`Runner ${data.src_user.src_name} added`);
             } else if (this.readyState === 4) {
                 document.querySelector('#frm_runners_submit').classList.toggle('is-loading');
                 postError('Failed to add runner', xhr.responseText, xhr.statusText);
