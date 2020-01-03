@@ -84,7 +84,17 @@ class TrackerController extends Controller
                 return response()->json(['status' => 500, 'message' => 'Failed to load runner data'], 500);
             }
 
-            $runner_data = json_decode($runner_data, true)['data'];
+            $runner_data = json_decode($runner_data, true);
+
+            if (!isset($runner_data) || !isset($runner_data['data'])) {
+                if (isset($runner_data) && ($runner_data['status']) && $runner_data['status'] === 404) {
+                    return response()->json(['status' => 422, 'message' => 'Runner not found'], 500);
+                } else {
+                    return response()->json(['status' => 500, 'message' => 'Failed to load runner data'], 500);
+                }
+            }
+
+            $runner_data = $runner_data['data'];
 
             if (!$this->validateRunnerDetails($runner_data)) {
                 return response()->json(['status' => 500, 'message' => 'Invalid runner data received'], 500);
