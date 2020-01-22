@@ -25,6 +25,7 @@ class PBUpdate extends Command
     public function handle()
     {
         $users = SRCUser::all();
+        $tracker_cnt = 0;
 
         foreach ($users as $user) {
             sleep(1);
@@ -43,6 +44,7 @@ class PBUpdate extends Command
                 })->get();
 
                 foreach ($trackers as $tracker) {
+                    $tracker_cnt++;
                     $tracker_dt = $this->parseTimeString($tracker->last_updated);
 
                     foreach ($pbs['data'] as $pb) {
@@ -63,6 +65,8 @@ class PBUpdate extends Command
                 }
             }
         }
+        
+        echo "$tracker_cnt trackers updated";
     }
 
     /**
