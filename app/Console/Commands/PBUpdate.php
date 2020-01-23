@@ -68,7 +68,7 @@ class PBUpdate extends Command
                             }
                         }
 
-                        Log::createEntry(LogType::PB_UPDATED, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
+                        //Log::createEntry(LogType::PB_UPDATED, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
                     }
 
                     Log::createEntry(LogType::TRACKER_UPDATED, null, ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
