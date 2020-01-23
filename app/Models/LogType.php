@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+class LogType
+{
+    const WEB_REQUEST = 'WEB_REQUEST';
+    const USER_LOGON = 'USER_LOGON';
+    const USER_LOGOFF = 'USER_LOGOFF';
+    const USER_REGISTERED = 'USER_REGISTERED';
+    const USER_UPDATED = 'USER_UPDATED';
+    const WEBHOOK_CREATED = 'WEBHOOK_CREATED';
+    const WEBHOOK_UPDATED = 'WEBHOOK_UPDATED';
+    const WEBHOOK_INVALIDATED = 'WEBHOOK_INVALIDATED';
+    const PB_UPDATED = 'PB_UPDATED';
+    const PB_POSTED = 'PB_POSTED';
+    const PROCESS_START = 'PROCESS_START';
+    const PROCESS_END = 'PROCESS_END';
+    const TRACKER_CREATED = 'TRACKER_CREATED';
+    const TRACKER_UPDATED = 'TRACKER_UPDATED';
+    const TRACKER_DELETED = 'TRACKER_DELETED';
+    const ERROR = 'ERROR';
+}

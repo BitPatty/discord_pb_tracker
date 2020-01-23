@@ -8,7 +8,7 @@ class SRCUser extends Model
 {
     public function trackers()
     {
-        return $this->hasMany('\App\Models\Tracker', 'src_user_id');
+        return $this->hasMany(Tracker::class, 'src_user_id');
     }
 
     protected $fillable = [

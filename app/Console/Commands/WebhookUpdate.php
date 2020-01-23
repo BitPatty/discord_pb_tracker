@@ -3,18 +3,25 @@
 namespace App\Console\Commands;
 
 use App\Http\Fetch;
+use App\Models\Log;
+use App\Models\LogType;
+use App\Models\ProcessType;
 use App\Models\Webhook;
 use App\Models\WebhookState;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class WebhookUpdate extends Command
 {
     protected $signature = 'webhook:update';
     protected $description = 'Updates webhook details';
 
+    private $process_uuid;
+
     public function __construct()
     {
         parent::__construct();
+        $this->process_uuid = Str::uuid()->toString();
     }
 
     /**
@@ -22,7 +29,7 @@ class WebhookUpdate extends Command
      */
     public function handle()
     {
-        printf("Loading hooks\r\n");
+        Log::createEntry(LogType::PROCESS_START, 'Webhook update started', ProcessType::WEBHOOK_UPDATE, $this->process_uuid, null, null, null, null);
         $hooks = Webhook::where('state', '<>', WebhookState::INVALIDATED)->get();
 
         foreach ($hooks as $hook) {
@@ -37,17 +44,21 @@ class WebhookUpdate extends Command
                 if ($this->isWebhookInvalid($hook_data)) {
                     $hook->state = WebhookState::INVALIDATED;
                     $hook->save();
-                    printf("Hook invalidated\r\n");
+
+                    Log::createEntry(LogType::WEBHOOK_INVALIDATED, 'Response => ' . json_encode($hook_data), ProcessType::WEBHOOK_UPDATE, $this->process_uuid, null, null, $hook, null);
                 } elseif ($this->validateWebhookDetails($hook_data)) {
                     $hook->discord_id = $hook_data['id'];
                     $hook->channel_id = $hook_data['channel_id'];
                     $hook->guild_id = $hook_data['guild_id'];
                     $hook->avatar_url = isset($hook_data['avatar']) ? 'https://cdn.discordapp.com/avatars/' . $hook_data['id'] . '/' . $hook_data['avatar'] . '.png' : null;
                     $hook->save();
-                    printf("Hook updated\r\n");
+
+                    Log::createEntry(LogType::WEBHOOK_UPDATED, null, ProcessType::WEBHOOK_UPDATE, $this->process_uuid, null, null, $hook, null);
                 }
             }
         }
+
+        Log::createEntry(LogType::PROCESS_END, 'Webhook update finished', ProcessType::WEBHOOK_UPDATE, $this->process_uuid, null, null, null, null);
     }
 
     /**
