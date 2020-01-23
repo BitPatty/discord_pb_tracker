@@ -8,12 +8,12 @@ class Tracker extends Model
 {
     public function webhook()
     {
-        return $this->belongsTo('\App\Models\Webhook', 'webhook_id', 'id');
+        return $this->belongsTo(Webhook::class, 'webhook_id', 'id');
     }
 
     public function src_user()
     {
-        return $this->belongsTo('\App\Models\SRCUser', 'src_user_id', 'id');
+        return $this->belongsTo(SRCUser::class, 'src_user_id', 'id');
     }
 
     protected $fillable = [

@@ -3,20 +3,27 @@
 namespace App\Console\Commands;
 
 use App\Http\Fetch;
+use App\Models\Log;
+use App\Models\LogType;
+use App\Models\ProcessType;
 use App\Models\SRCUser;
 use App\Models\Tracker;
 use App\Models\WebhookState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class PBUpdate extends Command
 {
     protected $signature = 'pbs:update';
     protected $description = 'Updates PB times and triggers the webhooks';
 
+    private $process_uuid;
+
     public function __construct()
     {
         parent::__construct();
+        $this->process_uuid = Str::uuid()->toString();
     }
 
     /**
@@ -24,8 +31,8 @@ class PBUpdate extends Command
      */
     public function handle()
     {
+        Log::createEntry(LogType::PROCESS_START, 'PB update started', ProcessType::PB_UPDATE, $this->process_uuid, null, null, null, null);
         $users = SRCUser::all();
-        $tracker_cnt = 0;
 
         foreach ($users as $user) {
             sleep(1);
@@ -44,7 +51,6 @@ class PBUpdate extends Command
                 })->get();
 
                 foreach ($trackers as $tracker) {
-                    $tracker_cnt++;
                     $tracker_dt = $this->parseTimeString($tracker->last_updated);
 
                     foreach ($pbs['data'] as $pb) {
@@ -55,18 +61,22 @@ class PBUpdate extends Command
                             try {
                                 $tracker->last_updated = $fetch_dt;
                                 $tracker->save();
-                                printf("Posting PB: " . $pb['run']['id'] . "\r\n");
                                 $this->post_pb($tracker, $pb);
+                                Log::createEntry(LogType::PB_POSTED, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
                                 sleep(2);
                             } catch (\Exception $ex) {
                             }
                         }
+
+                        Log::createEntry(LogType::PB_UPDATED, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
                     }
+
+                    Log::createEntry(LogType::TRACKER_UPDATED, null, ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
                 }
             }
         }
-        
-        echo "$tracker_cnt trackers updated";
+
+        Log::createEntry(LogType::PROCESS_END, 'PB update finished', ProcessType::PB_UPDATE, $this->process_uuid, null, null, null, null);
     }
 
     /**

@@ -8,12 +8,12 @@ class Webhook extends Model
 {
     public function trackers()
     {
-        return $this->hasMany('\App\Models\Tracker', 'webhook_id');
+        return $this->hasMany(Tracker::class, 'webhook_id');
     }
 
     public function manager()
     {
-        return $this->belongsTo('\App\Models\User', 'manager_id');
+        return $this->belongsTo(User::class, 'manager_id');
     }
 
     protected $fillable = [

@@ -1,5 +1,5 @@
 {
-    "name": "BitPatty/discord_pb_tracker",
+    "name": "bitpatty/discord_pb_tracker",
     "type": "project",
     "description": "A speedrun.com PB tracker for use with discord.",
     "license": "MIT",
@@ -9,6 +9,7 @@
         "ext-json": "*",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
         "socialiteproviders/discord": "^2.0"

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\LogType;
 use App\Models\Tracker;
 use App\Models\Webhook;
 use Illuminate\Http\Request;
