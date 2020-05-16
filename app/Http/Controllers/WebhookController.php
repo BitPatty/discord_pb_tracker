@@ -115,7 +115,7 @@ class WebhookController extends Controller
     {
         $validator = Validator::make($request->post(), [
             'name' => 'required|regex:/^([^ ]+[ ]*)+$/u',
-            'url' => 'required|regex:/^https\:\/\/discordapp\.com\/api\/webhooks[\/a-zA-Z0-9\-_]+$/u',
+            'url' => 'required|regex:/^https\:\/\/(?:discord|discordapp)\.com\/api\/webhooks[\/a-zA-Z0-9\-_]+$/u',
             'description' => 'max: 2048'
         ]);
 
