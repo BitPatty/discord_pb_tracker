@@ -111,7 +111,7 @@ class PBUpdate extends Command
      */
     private function prepareComment($comment)
     {
-        if (strlen($comment) > 980) return substr($comment, 0, 970) . '...';
+        if (strlen($comment) > 500) return substr($comment, 0, 400) . ' [...]';
         return $comment;
     }
 
@@ -165,18 +165,14 @@ class PBUpdate extends Command
      */
     private function post_pb(Tracker $tracker, $pb)
     {
-        $run_date = $pb['run']['submitted'];
+        $verification_date = $pb['run']['status']['verify-date'];
         $run_url = $pb['run']['weblink'];
         $run_place = $pb['place'];
 
         $run_comment = $pb['run']['comment'];
 
-
-
         if (!isset($run_comment) || empty($run_comment))
             $run_comment = "-";
-        else if (strlen($run_comment) > 500)
-            $run_comment = substr($run_comment, 0, 400) . ' (...) ';
 
         $run_time = $this->formatTime($pb['run']['times']['primary_t']);
         $game_name = $pb['game']['data']['names']['international'];
@@ -193,7 +189,7 @@ class PBUpdate extends Command
                     "description" => "",
                     "url" => $run_url,
                     "color" => 6964921,
-                    "timestamp" => $run_date,
+                    "timestamp" => $verification_date,
                     "footer" => array(
                         "icon_url" => $game_icon,
                         "text" => "Verified"
