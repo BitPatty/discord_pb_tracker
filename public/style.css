@@ -1,9 +1,10 @@
-html, body {
+html,
+body {
     min-height: 100%;
 }
 
 body {
-    font-family: 'Nunito', sans-serif;
+    font-family: "Nunito", sans-serif;
     padding: 15px;
 }
 
