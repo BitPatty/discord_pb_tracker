@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
+
 class PBUpdate extends Command
 {
     protected $signature = 'pbs:update';
@@ -46,7 +47,7 @@ class PBUpdate extends Command
                     $user->save();
                 }
 
-                $trackers = $users = Tracker::with(['webhook', 'src_user'])->where(['src_user_id' => $user->id])->whereHas('webhook', function ($q) {
+                $trackers = Tracker::with(['webhook', 'src_user'])->where(['src_user_id' => $user->id])->whereHas('webhook', function ($q) {
                     $q->where(['state' => WebhookState::ACTIVE]);
                 })->get();
 
@@ -54,10 +55,12 @@ class PBUpdate extends Command
                     $tracker_dt = $this->parseTimeString($tracker->last_updated);
 
                     foreach ($pbs['data'] as $pb) {
-                        if ($pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
+                        if (
+                            $pb['category']['data']['type'] === 'per-game' && isset($pb['run']['status'])
                             && isset($pb['run']['status']['verify-date'])
                             && $pb['run']['status']['status'] === 'verified'
-                            && $this->parseTimeString($pb['run']['status']['verify-date']) > $tracker_dt) {
+                            && $this->parseTimeString($pb['run']['status']['verify-date']) > $tracker_dt
+                        ) {
                             try {
                                 $tracker->last_updated = $fetch_dt;
                                 $tracker->save();
@@ -65,10 +68,16 @@ class PBUpdate extends Command
                                 Log::createEntry(LogType::PB_POSTED, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
                                 sleep(2);
                             } catch (\Exception $ex) {
+                                try {
+                                    Log::createEntry(LogType::ERROR, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
+                                    Log::createEntry(LogType::ERROR, 'Error => ' . $ex->getMessage(), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
+                                    Log::createEntry(LogType::ERROR, 'Error => ' . $ex->getTraceAsString(), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
+                                } catch (\Exception $ex) {
+                                }
+
+                                if (env('APP_ENV') === 'local') dd($ex);
                             }
                         }
-
-                        //Log::createEntry(LogType::PB_UPDATED, 'PB => ' . json_encode($pb), ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
                     }
 
                     Log::createEntry(LogType::TRACKER_UPDATED, null, ProcessType::PB_UPDATE, $this->process_uuid, null, $user, $tracker->webhook, $tracker);
@@ -131,6 +140,25 @@ class PBUpdate extends Command
     }
 
     /**
+     * Formats the display time
+     */
+    private function formatTime($time)
+    {
+        $time_str = strval($time);
+        $time_frac = floatVal($time_str);
+        $time_flat = floor($time_frac);
+
+        $time_milli = '';
+
+        if (strpos($time_str, '.') > 0) {
+            $time_milli = '.' . explode('.', $time_str)[1];
+        }
+
+        $hours = floor($time_flat / 3600);
+        return $hours . gmdate(':i:s', $time_flat) . $time_milli;
+    }
+
+    /**
      * Posts a PB with the given tracker
      * @param Tracker $tracker The tracker
      * @param $pb mixed The run
@@ -142,9 +170,15 @@ class PBUpdate extends Command
         $run_place = $pb['place'];
 
         $run_comment = $pb['run']['comment'];
-        if (!isset($run_comment) || empty($run_comment)) $run_comment = "-";
 
-        $run_time = gmdate('H:i:s', floor(floatval($pb['run']['times']['primary_t'])));
+
+
+        if (!isset($run_comment) || empty($run_comment))
+            $run_comment = "-";
+        else if (strlen($run_comment) > 500)
+            $run_comment = substr($run_comment, 0, 400) . ' (...) ';
+
+        $run_time = $this->formatTime($pb['run']['times']['primary_t']);
         $game_name = $pb['game']['data']['names']['international'];
         $game_category = $pb['category']['data']['name'];
         $game_icon = $pb['game']['data']['assets']['icon']['uri'];
