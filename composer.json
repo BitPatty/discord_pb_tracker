@@ -8,7 +8,7 @@
         "ext-curl": "*",
         "ext-json": "*",
         "doctrine/dbal": "2.10.3",
-        "fideloper/proxy": "4.2.2",
+        "fideloper/proxy": "4.4.0",
         "guzzlehttp/guzzle": "6.5.2",
         "laravel/framework": "6.9.0",
         "laravel/tinker": "2.0.0",
