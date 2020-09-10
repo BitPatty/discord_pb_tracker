@@ -9,7 +9,7 @@
         "ext-json": "*",
         "doctrine/dbal": "2.10.3",
         "fideloper/proxy": "4.4.0",
-        "guzzlehttp/guzzle": "6.5.2",
+        "guzzlehttp/guzzle": "6.5.5",
         "laravel/framework": "6.9.0",
         "laravel/tinker": "2.0.0",
         "socialiteproviders/discord": "2.0.2"
