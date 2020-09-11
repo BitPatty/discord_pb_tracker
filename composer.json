@@ -11,7 +11,7 @@
         "fideloper/proxy": "4.4.0",
         "guzzlehttp/guzzle": "6.5.5",
         "laravel/framework": "6.9.0",
-        "laravel/tinker": "2.0.0",
+        "laravel/tinker": "2.4.2",
         "socialiteproviders/discord": "2.0.2"
     },
     "require-dev": {
