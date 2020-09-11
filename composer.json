@@ -10,7 +10,7 @@
         "doctrine/dbal": "2.10.3",
         "fideloper/proxy": "4.4.0",
         "guzzlehttp/guzzle": "7.0.1",
-        "laravel/framework": "6.9.0",
+        "laravel/framework": "6.18.40",
         "laravel/tinker": "2.4.2",
         "socialiteproviders/discord": "2.0.2"
     },
